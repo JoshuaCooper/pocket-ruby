@@ -63,7 +63,7 @@ end
 get "/retrieve" do
   client = Pocket.client(:access_token => session[:access_token])
   #info = client.retrieve(:detailType => :complete, :count => 2)
-  info = client.retrieve(:detailType => :simple, :since => 1104537600)# => :complete, :count => 2)
+  info = client.retrieve(:detailType => :simple, :since => 1467072000)# => :complete, :count => 2)
   # html = "<h1>#{user.username}'s recent photos</h1>"
   # for media_item in client.user_recent_media
   #   html << "<img src='#{media_item.images.thumbnail.url}'>"
