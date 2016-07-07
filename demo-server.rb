@@ -1,5 +1,5 @@
 require "sinatra"
-
+require "pry"
 require "./lib/pocket-ruby.rb"
 
 enable :sessions
@@ -7,7 +7,8 @@ enable :sessions
 CALLBACK_URL = "http://localhost:4567/oauth/callback"
 
 Pocket.configure do |config|
-  config.consumer_key = '10188-3565cd04d1464e6d0e64b67f'
+  #config.consumer_key = '10188-3565cd04d1464e6d0e64b67f'
+  config.consumer_key = '55809-cc464f4ad45ea0f4b10fc086'
 end
 
 get '/reset' do
@@ -15,6 +16,8 @@ get '/reset' do
   session.clear
 end
 
+
+# This is the executed when you first open the applicaiton in a browser.
 get "/" do
   puts "GET /"
   puts "session: #{session}"
@@ -22,7 +25,14 @@ get "/" do
   if session[:access_token]
     '
 <a href="/add?url=http://getpocket.com">Add Pocket Homepage</a>
+</br>
 <a href="/retrieve">Retrieve single item</a>
+</br>
+<a href="/export">Export Data</a>
+</br>
+<a href="/randomize">Give me a random selection</a>
+</br>
+<a href="/dataselection">Give a slice of the data</a>    
     '
   else
     '<a href="/oauth/connect">Connect with Pocket</a>'
@@ -61,12 +71,25 @@ end
 
 get "/retrieve" do
   client = Pocket.client(:access_token => session[:access_token])
-  info = client.retrieve(:detailType => :complete, :count => 1)
-
+  #info = client.retrieve(:detailType => :complete, :count => 2)
+  info = client.retrieve(:detailType => :simple, :since => 1467072000)# => :complete, :count => 2)
   # html = "<h1>#{user.username}'s recent photos</h1>"
   # for media_item in client.user_recent_media
   #   html << "<img src='#{media_item.images.thumbnail.url}'>"
   # end
   # html
   "<pre>#{info}</pre>"
+end
+
+get "/dataselection" do
+  client = Pocket.client(:access_token => session[:access_token])
+  #info = client.retrieve(:since => 1467072000, :count => 3, detailType: => 'simple')
+  info = client.retrieve(:since => 1467072000)
+  
+  info['list'].keys.each do |key|
+    #entry = info['list'][key]
+    blah = info['list'][key]['given_url']
+    puts blah
+  end
+  "<pre>#{blah}</pre>"# do work with entry
 end
